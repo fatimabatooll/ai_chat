@@ -31,44 +31,16 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
               <MessageSquare className="mr-3 h-4 w-4" />
               New Chat
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-teal-500/20"
-            >
-              <Bookmark className="mr-3 h-4 w-4" />
-              Saved Chats
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-teal-500/20"
-            >
-              <HelpCircle className="mr-3 h-4 w-4" />
-              FAQs
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start text-gray-300 hover:text-white hover:bg-teal-500/20"
-            >
-              <Phone className="mr-3 h-4 w-4" />
-              Contact Support
-            </Button>
+            
             <div className="pt-4 border-t border-teal-500/20">
-              <Link href="/login">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start text-gray-300 hover:text-white hover:bg-teal-500/20"
-                >
-                  <LogIn className="mr-3 h-4 w-4" />
-                  Sign In
-                </Button>
-              </Link>
+             
               <Link href="/register">
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-gray-300 hover:text-white hover:bg-teal-500/20"
                 >
                   <UserPlus className="mr-3 h-4 w-4" />
-                  Sign Up
+                  Log out
                 </Button>
               </Link>
             </div>

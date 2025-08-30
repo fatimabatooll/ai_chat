@@ -1,3 +1,4 @@
+
 "use client"
 
 interface Message {
@@ -21,7 +22,16 @@ export function ChatMessage({ message }: ChatMessageProps) {
             : "bg-gradient-to-r from-teal-600 to-cyan-500 text-white mr-12 shadow-lg shadow-teal-500/20 animate-pulse-glow"
         }`}
       >
-        <p className="text-sm leading-relaxed">{message.content}</p>
+        <p
+          className="
+            text-sm leading-relaxed
+            whitespace-pre-wrap break-words [overflow-wrap:anywhere] 
+            min-w-0 overflow-x-auto
+          "
+        >
+          {message.content}
+        </p>
+
         <p className="text-xs opacity-70 mt-2">
           {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </p>

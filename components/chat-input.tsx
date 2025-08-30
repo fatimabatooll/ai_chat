@@ -26,7 +26,7 @@ export function ChatInput({ value, onChange, onSend, onKeyPress }: ChatInputProp
               placeholder="Ask me anything..."
               className="bg-gray-800 border-teal-500/30 text-white placeholder-gray-400 rounded-2xl pr-24 py-3 focus:border-teal-400 focus:ring-teal-400/20"
             />
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
+            {/* <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -41,7 +41,7 @@ export function ChatInput({ value, onChange, onSend, onKeyPress }: ChatInputProp
               >
                 <Mic className="h-4 w-4" />
               </Button>
-            </div>
+            </div> */}
           </div>
           <Button
             onClick={onSend}
