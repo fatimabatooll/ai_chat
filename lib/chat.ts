@@ -1,128 +1,49 @@
-// lib/chat.ts
-import { api } from "./api";
 import Cookies from "js-cookie";
+import { httpBase } from "@/lib/utils"; // make sure this path matches your alias
 
-export interface Message {
-  id: string;
-  content: string;
-  isUser: boolean;
-  timestamp: Date;
+const base = httpBase();
+
+function authHeaders(): Record<string, string> {
+  const token = Cookies.get("access_token") || localStorage.getItem("access_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export interface Conversation {
-  id: string;
-  title?: string;
-  created_at: string;
-  updated_at: string;
+export async function createConversation(title: string) {
+  const res = await fetch(`${base}/api/v1/chat/history/conversations`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...authHeaders(),           // <-- call it
+    } as HeadersInit,
+    body: JSON.stringify({ title }),
+  });
+  if (!res.ok) throw new Error(`Create conversation failed: ${res.status}`);
+  return res.json();
 }
 
-export async function sendMessage(message: string): Promise<any> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.post(
-      "/api/v1/chat/",
-      { message },
-      {
-        headers: {
-          Authorization: `${type} ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.data;
-  } catch (error) {
-    console.error("Error sending message:", error);
-    throw error;
-  }
+export async function getConversations() {
+  const res = await fetch(`${base}/api/v1/chat/history/conversations`, {
+    headers: authHeaders() as HeadersInit,
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`List conversations failed: ${res.status}`);
+  return res.json();
 }
 
-export async function getConversations(): Promise<Conversation[]> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.get("/api/v1/chat/history/conversations", {
-      headers: {
-        Authorization: `${type} ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching conversations:", error);
-    throw error;
-  }
+export async function getMessages(conversationId: string) {
+  const res = await fetch(`${base}/api/v1/chat/history/conversations/${conversationId}/messages`, {
+    headers: authHeaders() as HeadersInit,
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Get messages failed: ${res.status}`);
+  return res.json();
 }
 
-export async function createConversation(): Promise<Conversation> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.post("/api/v1/chat/history/conversations", {}, {
-      headers: {
-        Authorization: `${type} ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.error("Error creating conversation:", error);
-    throw error;
-  }
-}
-
-export async function getConversationMessages(conversationId: string): Promise<Message[]> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.get(`/api/v1/chat/history/conversations/${conversationId}/messages`, {
-      headers: {
-        Authorization: `${type} ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching conversation messages:", error);
-    throw error;
-  }
-}
-
-export async function activateConversation(conversationId: string): Promise<any> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.post(`/api/v1/chat/history/conversations/${conversationId}/activate`, {}, {
-      headers: {
-        Authorization: `${type} ${token}`,
-      },
-    });
-    return res.data;
-  } catch (error) {
-    console.error("Error activating conversation:", error);
-    throw error;
-  }
-}
-
-export async function findSimilarProducts(name: string, image: string, platform: string): Promise<any> {
-  const token = Cookies.get("access_token");
-  const type = Cookies.get("token_type") || "Bearer";
-
-  try {
-    const res = await api.post("/api/v1/chat/find-similar-products", 
-      { name, image, platform },
-      {
-        headers: {
-          Authorization: `${type} ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.data;
-  } catch (error) {
-    console.error("Error finding similar products:", error);
-    throw error;
-  }
+export async function activateConversation(conversationId: string) {
+  const res = await fetch(`${base}/api/v1/chat/history/conversations/${conversationId}/activate`, {
+    method: "POST",
+    headers: authHeaders() as HeadersInit,
+  });
+  if (!res.ok) throw new Error(`Activate conversation failed: ${res.status}`);
+  return res.json();
 }

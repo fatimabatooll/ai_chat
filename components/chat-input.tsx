@@ -1,19 +1,19 @@
 "use client"
 
 import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Send, Mic, Upload, Loader2 } from "lucide-react"
+import { Send, Mic, Upload } from "lucide-react"
 
 interface ChatInputProps {
   value: string
   onChange: (value: string) => void
   onSend: () => void
   onKeyPress: (e: React.KeyboardEvent) => void
-  disabled?: boolean
 }
 
-export function ChatInput({ value, onChange, onSend, onKeyPress, disabled = false }: ChatInputProps) {
+export function ChatInput({ value, onChange, onSend, onKeyPress }: ChatInputProps) {
   return (
     <div className="p-4 border-t border-teal-500/20 bg-gray-900/50 backdrop-blur-sm">
       <div className="max-w-4xl mx-auto">
@@ -23,16 +23,14 @@ export function ChatInput({ value, onChange, onSend, onKeyPress, disabled = fals
               value={value}
               onChange={(e) => onChange(e.target.value)}
               onKeyPress={onKeyPress}
-              placeholder={disabled ? "AI is typing..." : "Ask me anything..."}
-              disabled={disabled}
-              className="bg-gray-800 border-teal-500/30 text-white placeholder-gray-400 rounded-2xl pr-24 py-3 focus:border-teal-400 focus:ring-teal-400/20 disabled:opacity-50"
+              placeholder="Ask me anything..."
+              className="bg-gray-800 border-teal-500/30 text-white placeholder-gray-400 rounded-2xl pr-24 py-3 focus:border-teal-400 focus:ring-teal-400/20"
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-gray-400 hover:text-white hover:bg-teal-500/20"
-                disabled={disabled}
               >
                 <Upload className="h-4 w-4" />
               </Button>
@@ -40,7 +38,6 @@ export function ChatInput({ value, onChange, onSend, onKeyPress, disabled = fals
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-gray-400 hover:text-white hover:bg-teal-500/20"
-                disabled={disabled}
               >
                 <Mic className="h-4 w-4" />
               </Button>
@@ -48,14 +45,10 @@ export function ChatInput({ value, onChange, onSend, onKeyPress, disabled = fals
           </div>
           <Button
             onClick={onSend}
-            disabled={!value.trim() || disabled}
-            className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white rounded-2xl px-6 py-3 shadow-lg shadow-teal-500/20 transition-all duration-200 hover:shadow-teal-500/30 disabled:opacity-50"
+            disabled={!value.trim()}
+            className="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white rounded-2xl px-6 py-3 shadow-lg shadow-teal-500/20 transition-all duration-200 hover:shadow-teal-500/30"
           >
-            {disabled ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
+            <Send className="h-4 w-4" />
           </Button>
         </div>
       </div>
