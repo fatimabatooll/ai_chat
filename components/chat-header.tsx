@@ -2,23 +2,28 @@
 
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, User, Menu } from "lucide-react"
-import Link from "next/link"
 import Cookies from "js-cookie"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+
+type UserProfile = {
+  name?: string
+  email?: string
+  avatarUrl?: string
+} | null
 
 interface ChatHeaderProps {
   onToggleSidebar: () => void
+  user?: UserProfile
 }
 
-export function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
-  const router = useRouter();
+export function ChatHeader({ onToggleSidebar, user }: ChatHeaderProps) {
+  const router = useRouter()
 
   const handleLogout = () => {
-    Cookies.remove("access_token");
-    localStorage.removeItem("access_token");
-    router.push("/login");
-  };
+    Cookies.remove("access_token")
+    localStorage.removeItem("access_token")
+    router.push("/login")
+  }
 
   return (
     <header className="flex items-center justify-between p-4 border-b border-teal-500/20 bg-gray-900/50 backdrop-blur-sm">
@@ -35,7 +40,9 @@ export function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
           <h1 className="text-xl font-bold bg-gradient-to-r from-teal-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
             AI Assistant
           </h1>
-          <p className="text-sm text-gray-400">Powered by AI. Designed for You.</p>
+          <p className="text-sm text-gray-400">
+            {user?.name ? `Welcome, ${user.name}` : "Powered by AI. Designed for You."}
+          </p>
         </div>
       </div>
 
@@ -53,7 +60,6 @@ export function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
           onClick={handleLogout}
         >
           <User className="h-5 w-5" />
-          
         </Button>
       </div>
     </header>
