@@ -6,38 +6,45 @@ const PUBLIC_ROUTES = ["/login", "/register", "/forgot-password"];
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Skip static & API assets
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/public") ||
-    pathname.startsWith("/favicon.ico")
-  ) {
+  // ✅ Skip static files and API routes
+  const isAsset = pathname.startsWith("/_next") ||
+                  pathname.startsWith("/api") ||
+                  pathname.startsWith("/favicon.ico") ||
+                  pathname.startsWith("/images") ||
+                  pathname.startsWith("/public");
+
+  if (isAsset) {
     return NextResponse.next();
   }
 
+  // ✅ Check token in cookies
   const token = req.cookies.get("access_token")?.value;
-  const isPublic = PUBLIC_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
 
-  // If no token and not on a public route -> redirect to login
-  if (!token && !isPublic) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/login";
-    url.searchParams.set("from", pathname);
-    return NextResponse.redirect(url);
+  // ✅ Check if the route is publicly accessible
+  const isPublicRoute = PUBLIC_ROUTES.some(
+    (publicPath) => pathname === publicPath || pathname.startsWith(`${publicPath}/`)
+  );
+
+  // ✅ Redirect unauthenticated users away from protected pages
+  if (!token && !isPublicRoute) {
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("from", pathname); // for redirect after login
+    return NextResponse.redirect(loginUrl);
   }
 
-  // If token exists and user tries to visit auth pages -> send to home
-  if (token && isPublic) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+  // ✅ Prevent logged-in users from accessing login/register pages
+  if (token && isPublicRoute) {
+    const homeUrl = req.nextUrl.clone();
+    homeUrl.pathname = "/";
+    return NextResponse.redirect(homeUrl);
   }
 
+  // ✅ Continue to requested page
   return NextResponse.next();
 }
 
-// Protect everything except static/image/api paths (matcher must be broad)
+// ✅ Apply middleware to all routes except static files and APIs
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico|images|public|api/.*).*)"],
 };

@@ -3,12 +3,23 @@
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, User, Menu } from "lucide-react"
 import Link from "next/link"
+import Cookies from "js-cookie"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
 
 interface ChatHeaderProps {
   onToggleSidebar: () => void
 }
 
 export function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    Cookies.remove("access_token");
+    localStorage.removeItem("access_token");
+    router.push("/login");
+  };
+
   return (
     <header className="flex items-center justify-between p-4 border-b border-teal-500/20 bg-gray-900/50 backdrop-blur-sm">
       <div className="flex items-center space-x-4">
@@ -35,11 +46,15 @@ export function ChatHeader({ onToggleSidebar }: ChatHeaderProps) {
         <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-teal-500/20">
           <HelpCircle className="h-5 w-5" />
         </Button>
-        <Link href="/login">
-          <Button variant="ghost" size="icon" className="text-gray-300 hover:text-white hover:bg-teal-500/20">
-            <User className="h-5 w-5" />
-          </Button>
-        </Link>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-gray-300 hover:text-white hover:bg-teal-500/20"
+          onClick={handleLogout}
+        >
+          <User className="h-5 w-5" />
+          
+        </Button>
       </div>
     </header>
   )
